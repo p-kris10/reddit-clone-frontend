@@ -11,8 +11,9 @@ import {useChangePasswordMutation} from "../../generated/graphql"
 import { withUrqlClient } from 'next-urql';
 import { createUrqlClient } from '../../utils/createUrqlClient';
 import NextLink from "next/link"
-export const ChangePasssword: NextPage<{token: string}> = ({token}) => {
+export const ChangePasssword: NextPage = () => {
         const router = useRouter()
+        console.log(router.query.token)
         const [,changePassword] = useChangePasswordMutation();
         const [tokenError,setTokenError] = useState('');
                 return (     
@@ -21,7 +22,9 @@ export const ChangePasssword: NextPage<{token: string}> = ({token}) => {
                 onSubmit = {async (values,{setErrors}) =>{
                         const response = await changePassword({
                                 newPassword : values.newPassword,
-                                token,
+                                token : 
+                                typeof router.query.token === "string"?
+                                router.query.token : "",
                         })
                         
                         if(response.data?.changePassword.errors)
@@ -64,11 +67,7 @@ export const ChangePasssword: NextPage<{token: string}> = ({token}) => {
                 </Wrapper>);
 }
 
-ChangePasssword.getInitialProps = ({query}) =>{
-        return{
-                token : query.token as string
-        }
-}
+
 
 export default withUrqlClient(createUrqlClient)(ChangePasssword);
 

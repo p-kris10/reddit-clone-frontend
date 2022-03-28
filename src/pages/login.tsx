@@ -16,6 +16,7 @@ interface LoginProps{}
 
 const Login : React.FC<{}> = ({}) =>{
     const [,login]= useLoginMutation();
+    console.log(router);
     return (
       <Wrapper variant="small">
        <Formik initialValues={{usernameOrEmail:"",password:""}}
@@ -29,7 +30,15 @@ const Login : React.FC<{}> = ({}) =>{
            }
            else if (response.data?.login.user)
            {
-             router.push('/')
+             if(typeof router.query.next === "string")
+             {
+               router.push(router.query.next)
+             }
+             else
+             {
+              router.push('/')
+             }
+            
            }
            }}>
            {
