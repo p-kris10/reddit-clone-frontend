@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { usePostQuery } from "../../generated/graphql";
 import { Layout } from "../../components/Layout";
 import { Heading, Box } from "@chakra-ui/react";
+import PostPage from "../../components/PostPage";
 
 const Post = ({}) => {
   const router = useRouter();
@@ -39,8 +40,9 @@ const Post = ({}) => {
 
   return (
     <Layout>
-      <Heading mb={4}>{data.post.title}</Heading>
-      {data.post.text}
+      {/* <Heading mb={4}>{data.post.title}</Heading>
+      {data.post.text} */}
+      <PostPage data={data}/>
     </Layout>
   );
 };

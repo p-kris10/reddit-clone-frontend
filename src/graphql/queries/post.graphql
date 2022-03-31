@@ -3,6 +3,7 @@ query Post($id: Int!) {
         id
         title
         text
+        textSnippet
         createdAt
         updatedAt
         points
