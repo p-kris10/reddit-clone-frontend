@@ -1,0 +1,19 @@
+mutation commentUpdate($comId:Int!,$text:String!,$creatorId:Int!){
+  commentUpdate(comId:$comId,text:$text,creatorId:$creatorId)
+  {
+  	comm
+    {
+      id
+      text
+      creator{
+        username
+        id
+      }
+    }
+    errors
+    {
+      field
+      message
+    }
+  }
+}

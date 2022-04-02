@@ -8,6 +8,12 @@ import {
   RegisterMutation,
   VoteMutationVariables,
   DeletePostMutationVariables,
+  CreateCommentMutation,
+  CommentsQuery,
+  CommentsDocument,
+  useCommentsQuery,
+  CreateCommentMutationVariables,
+  DeleteCommentMutationVariables,
 } from "../generated/graphql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
 import {pipe, tap } from 'wonka';
@@ -35,6 +41,16 @@ export type MergeMode = 'before' | 'after';
 export interface PaginationParams {
   cursorArgument?: string;
 }
+
+const commentResolver = () : Resolver =>{
+  return (_parent, fieldArgs, cache, info) => {
+    const { parentKey: entityKey, fieldName } = info;
+    const allFields = cache.inspectFields(entityKey);
+    console.log("all fileds",allFields);
+    return undefined;
+  }
+}
+
 const cursorPagination = (): Resolver => {
   return (_parent, fieldArgs, cache, info) => {
     const { parentKey: entityKey, fieldName } = info;
@@ -48,7 +64,7 @@ const cursorPagination = (): Resolver => {
     const fieldKey = `${fieldName}(${stringifyVariables(fieldArgs)})`;
     const isItInTheCache = cache.resolve(cache.resolveFieldByKey(entityKey, fieldKey) as string,"posts");
     info.partial = !isItInTheCache;
-    console.log("cache",isItInTheCache);
+    //console.log("cache",isItInTheCache);
     const results: string[] = [];
     let hasMore = true;
     fieldInfos.forEach((fi) => {
@@ -59,7 +75,7 @@ const cursorPagination = (): Resolver => {
       {
         hasMore = _hasMore as boolean;
       }
-      console.log("Data",hasMore,data);
+      //console.log("Data",hasMore,data);
       results.push(...data);
     });
 
@@ -79,6 +95,16 @@ function invalidateAllPosts(cache : Cache){
     cache.invalidate('Query','posts',fi.arguments || {});
   })}
 
+function invalidateAllComments(cache : Cache){
+    const allFields = cache.inspectFields("Query");
+    console.log("allfieldinfos",allFields)
+    const fieldInfos = allFields.filter((info) => info.fieldName === "comments");
+    console.log("fieldinfos",fieldInfos)
+    fieldInfos.forEach((fi)=>{
+      cache.invalidate('Query','comments',fi.arguments || {});
+    })
+  }
+
 
 export const createUrqlClient = (ssrExchange: any,ctx:any) =>{
   let cookie = ''
@@ -97,24 +123,55 @@ export const createUrqlClient = (ssrExchange: any,ctx:any) =>{
   } : undefined,
   },
   exchanges: [
+    devtoolsExchange,
     dedupExchange,
     cacheExchange({
       resolvers: {
         keys  :{
           PaginatedPosts : ()=> null,
-        },
+          },
         Query: {
           posts: cursorPagination(),
         },
       },
       updates: {
         Mutation: {
+          comment: (result, _args, cache, _info) => {
+            console.log("this ran")
+            const {postId} = _args as CreateCommentMutationVariables;
+            const Comment = gql`
+              {
+                comments(postId : ${postId.toString()}) {
+                  id
+                  text
+                postId
+                creatorId
+                creator
+                {
+                  id
+                  username
+                }
+                }
+              }
+            `;
+            cache.updateQuery({ query: Comment }, data => {
+              console.log(result)
+              data.comments.unshift(result)
+              return data;
+            });
+          },
           deletePost : (_result, args, cache, info) => {
-            cache.invalidate({
+                cache.invalidate({
               __typename : "Post",
               id : (args as DeletePostMutationVariables).id
             })
            },
+           deleteComment : (_result, args, cache, info) => {
+            cache.invalidate({
+              __typename : "Comment",
+              id : (args as DeleteCommentMutationVariables).id
+            })
+          },
           vote: (_result, args, cache, info) => {
             const { postId, value } = args as VoteMutationVariables;
             const data = cache.readFragment(
@@ -145,6 +202,7 @@ export const createUrqlClient = (ssrExchange: any,ctx:any) =>{
               );
             }
           },
+          
           createPost : (_result, args, cache, info) => {
             invalidateAllPosts(cache);
           },

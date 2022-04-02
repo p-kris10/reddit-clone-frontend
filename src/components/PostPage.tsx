@@ -1,16 +1,23 @@
-import { Stack, Heading, Box, Flex, Textarea, Button } from '@chakra-ui/react';
-import React from 'react'
-import { PostQuery } from '../generated/graphql';
-import { Layout } from './Layout';
+import { Box, Button, Flex, Heading, Stack } from '@chakra-ui/react';
+import { Form, Formik,} from 'formik';
+import { resetClient } from 'next-urql/dist/types/init-urql-client';
+import React from 'react';
+import { PostQuery, useCreateCommentMutation } from '../generated/graphql';
+import { Comments } from './Comments';
+import { InputField } from './InputField';
 import { UpdootSection } from './UpdootSection';
 
 interface PostPageProps {
- data : PostQuery | undefined
+ data : PostQuery
 }
 
-const PostPage: React.FC<PostPageProps> = ({data}) => {
+export const PostPage: React.FC<PostPageProps> = ({data}) => {
+
+    const [,createComment] = useCreateCommentMutation();
+    
     if(data?.post)
     {
+        const pid = data.post.id;
         return (
         
                 <Stack spacing={3}>
@@ -28,14 +35,48 @@ Topic sentences are similar to mini thesis statements. Like a thesis statement, 
 
 In academic writing, the topic sentence nearly always works best at the beginning of a paragraph so that the reader knows what to expect:</Box>
                     
-                    <Heading as='h4' size='md' >Comments</Heading>
+                    <Heading as='h4' size='md'pl={3} >Comments</Heading>
 
-                    <Flex shadow="md" alignItems="center" borderWidth="1px">
-                        <Textarea placeholder="Add a comment"></Textarea>
-                        <Button colorScheme="blackAlpha">Post</Button>
-                    </Flex>
-
-                    <Box shadow="md" padding="50px" borderWidth="1px">Comments</Box>
+                    
+                        {/* <Textarea placeholder="Add a comment" onChange={()=>hangleChange()}></Textarea> */}
+                        <Formik
+                            initialValues={{ text:""}}
+                            onSubmit={async (values,{resetForm}) => {
+                            if(values.text !== "")
+                            {
+                                await createComment({postId : pid,...values});
+                            }
+                            resetForm();
+                
+                            }}
+                        >
+                            {({ isSubmitting }) => (
+                            <Form>
+                            <Flex shadow="md" alignItems="center" justifyContent="center" borderWidth="1px">
+                            <Box flex={1} >
+                                <InputField
+                                    textarea
+                                    name="text"
+                                    placeholder="Add a comment"
+                                    label=""
+                                />
+                                </Box>
+                                <Button
+                                mt={4}
+                                type="submit"
+                                isLoading={isSubmitting}
+                                colorScheme="teal"
+                                >
+                                Comment
+                                </Button>
+                                </Flex>
+                            </Form>
+                            )}
+                        </Formik>
+                        {/* <Button colorScheme="blackAlpha">Post</Button> */}
+                    
+                   <Comments postId={data.post.id}/>
+                    
                 </Stack>
 
         );
@@ -46,4 +87,3 @@ In academic writing, the topic sentence nearly always works best at the beginnin
         
 }
 
-export default PostPage;
