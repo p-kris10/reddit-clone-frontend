@@ -46,7 +46,7 @@ const commentResolver = () : Resolver =>{
   return (_parent, fieldArgs, cache, info) => {
     const { parentKey: entityKey, fieldName } = info;
     const allFields = cache.inspectFields(entityKey);
-    console.log("all fileds",allFields);
+    //console.log("all fileds",allFields);
     return undefined;
   }
 }
@@ -97,9 +97,9 @@ function invalidateAllPosts(cache : Cache){
 
 function invalidateAllComments(cache : Cache){
     const allFields = cache.inspectFields("Query");
-    console.log("allfieldinfos",allFields)
+    //console.log("allfieldinfos",allFields)
     const fieldInfos = allFields.filter((info) => info.fieldName === "comments");
-    console.log("fieldinfos",fieldInfos)
+    //console.log("fieldinfos",fieldInfos)
     fieldInfos.forEach((fi)=>{
       cache.invalidate('Query','comments',fi.arguments || {});
     })
@@ -137,7 +137,7 @@ export const createUrqlClient = (ssrExchange: any,ctx:any) =>{
       updates: {
         Mutation: {
           comment: (result, _args, cache, _info) => {
-            console.log("this ran")
+            //console.log("this ran")
             const {postId} = _args as CreateCommentMutationVariables;
             const Comment = gql`
               {
@@ -155,7 +155,7 @@ export const createUrqlClient = (ssrExchange: any,ctx:any) =>{
               }
             `;
             cache.updateQuery({ query: Comment }, data => {
-              console.log(result)
+              //console.log(result)
               data.comments.unshift(result)
               return data;
             });

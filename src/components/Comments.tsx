@@ -12,8 +12,6 @@ interface CommentsProps {
 export const Comments: React.FC<CommentsProps> = ({postId}) => {
         const variables = {postId}
         const [dispState,setDisp] = useState({isEdit:false,cid:-1});
-        // const [isEdit,setEdit] = useState(false);
-        // const [cid,setCid] = useState(-1);
         const [text,setText] = useState("");
         const [{data : comments,fetching }] = useCommentsQuery({variables});
         const [{ data: meData }] = useMeQuery();

@@ -18,7 +18,7 @@ const Index = () => {
 
   const [, deletePost] = useDeletePostMutation();
 
-  console.log(variables);
+  //console.log(variables);
   if(!fetching && !data)
   {
     return <div>you got no posts for some reason</div>
