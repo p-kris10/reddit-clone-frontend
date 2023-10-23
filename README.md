@@ -1,29 +1,19 @@
-# Example app with [chakra-ui](https://github.com/chakra-ui/chakra-ui)
+## Overview
 
-This example features how to use [chakra-ui](https://github.com/chakra-ui/chakra-ui) as the component library within a Next.js app.
+This project is a Full Stack Reddit Clone, developed in January 2022. It replicates the core features of the popular Reddit platform, allowing users to create posts, upvote content, leave comments, and more.
 
-We are connecting the Next.js `_app.js` with `chakra-ui`'s Theme and ColorMode containers so the pages can have app-wide dark/light mode. We are also creating some components which shows the usage of `chakra-ui`'s style props.
+## Key Features
 
-## Deploy your own
+- **Tech Stack**: The project leverages Next.js for the frontend, Express.js for the backend, and a PostgreSQL database to store data. GraphQL is used for efficient queries.
 
-Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example) or preview live with [StackBlitz](https://stackblitz.com/github/vercel/next.js/tree/canary/examples/with-chakra-ui)
+- **Post Creation**: Users can create posts on various topics, complete with titles, descriptions, and content.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/vercel/next.js/tree/canary/examples/with-chakra-ui&project-name=with-chakra-ui&repository-name=with-chakra-ui)
+- **Upvotes**: The application supports upvoting on posts, a fundamental feature of any community-driven platform.
 
-## How to use
+- **Comments**: Users can engage in discussions by leaving comments on posts.
 
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init) or [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/) to bootstrap the example:
+- **API Pagination**: To ensure optimal performance, the project implements API pagination for retrieving posts.
 
-```bash
-npx create-next-app --example with-chakra-ui with-chakra-ui-app
-# or
-yarn create next-app --example with-chakra-ui with-chakra-ui-app
-```
+- **User Sessions**: For user authentication and management, the system uses Redis as a store for cookie-based user sessions.
 
-Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&utm_medium=readme&utm_campaign=next-example) ([Documentation](https://nextjs.org/docs/deployment)).
-
-## Notes
-
-Chakra has supported Gradients and RTL in `v1.1`. To utilize RTL, [add RTL direction and swap](https://chakra-ui.com/docs/features/rtl-support).
-
-If you don't have multi-direction app, you should make `<Html lang="ar" dir="rtl">` inside `_document.js`.
+Link to backend code : https://github.com/p-kris10/reddit-clone-backend
