@@ -1,6 +1,6 @@
 ## Overview
 
-This project is a Full Stack Reddit Clone, developed in January 2022. It replicates the core features of the popular Reddit platform, allowing users to create posts, upvote content, leave comments, and more.
+This project is a Full Stack Reddit Clone. It replicates the core features of the popular Reddit platform, allowing users to create posts, upvote content, leave comments, and more.
 
 ## Key Features
 
